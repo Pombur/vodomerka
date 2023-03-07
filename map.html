@@ -1,10 +1,12 @@
+require('dotenv').config();
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>Карта Деда</title>
     <meta charset="utf-8">
     <link rel="icon" type="image/png" href="icon.png">
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=" + YANDEX_API_KEY + "&lang=ru_RU" type="text/javascript"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=94bb227a-f063-4544-a825-3141b21ccfc6&lang=ru_RU" type="text/javascript"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <style>
         body, html {
@@ -62,7 +64,7 @@
                 center: [55.76, 37.64],
                 zoom: 10
             });
-           $.getJSON("https://sheets.googleapis.com/v4/spreadsheets/10WX3Q1GuwKnNs95rYA4L6xGsjnlTm6NJb5xW2Z50Ogk/values/Abi!A2:C?key=" + GOOGLE_SHEETS_API_KEY,
+            $.getJSON("https://sheets.googleapis.com/v4/spreadsheets/10WX3Q1GuwKnNs95rYA4L6xGsjnlTm6NJb5xW2Z50Ogk/values/Abi!A2:C?key=" + process.env.GOOGLE_SHEETS_API_KEY,
             function(data) {
                 $.each(data.values, function(key, val) {
                     var myPlacemark = new ymaps.Placemark([parseFloat(val[0]), parseFloat(val[1])], {
