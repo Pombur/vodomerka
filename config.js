@@ -1,0 +1,2 @@
+var YANDEX_API_KEY = '94bb227a-f063-4544-a825-3141b21ccfc6';
+
