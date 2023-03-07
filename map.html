@@ -1,71 +1,40 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
-
 <title>Пример Яндекс карты</title>
-
 <meta charset="utf-8">
-
 <script src="https://api-maps.yandex.ru/2.1/?apikey=94bb227a-f063-4544-a825-3141b21ccfc6&lang=ru_RU" type="text/javascript"></script>
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-</head>
-
-<body>
-
-<div id="map" style="width: 800px; height: 600px"></div>
-
- 
-
-<script type="text/javascript">
-
-ymaps.ready(init);
-
- 
-
-function init() {
-
-var myMap = new ymaps.Map("map", {
-
-center: [55.76, 37.64],
-
-zoom: 10
-
-});
-
- 
-
-$.getJSON("https://sheets.googleapis.com/v4/spreadsheets/10WX3Q1GuwKnNs95rYA4L6xGsjnlTm6NJb5xW2Z50Ogk/values/Abi!A2:C?key=AIzaSyBuQc7Oy5xHOgbdIkrb1omZpEF95orEqYs",
-
-function(data) {
-
-$.each(data.values, function(key, val) {
-
-var myPlacemark = new ymaps.Placemark([parseFloat(val[0]), parseFloat(val[1])], {
-
-hintContent: val[2]
-
-}, {
-
-preset: 'islands#redDotIcon'
-
-});
-
- 
-
-myMap.geoObjects.add(myPlacemark);
-
-});
-
-});
-
+<style>
+#map {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    min-width: 300px;
 }
-
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script type="text/javascript">
+ymaps.ready(init);
+function init() {
+    var myMap = new ymaps.Map("map", {
+        center: [55.76, 37.64],
+        zoom: 10
+    });
+    $.getJSON("https://sheets.googleapis.com/v4/spreadsheets/10WX3Q1GuwKnNs95rYA4L6xGsjnlTm6NJb5xW2Z50Ogk/values/Abi!A2:C?key=AIzaSyBuQc7Oy5xHOgbdIkrb1omZpEF95orEqYs",
+    function(data) {
+        $.each(data.values, function(key, val) {
+            var myPlacemark = new ymaps.Placemark([parseFloat(val[0]), parseFloat(val[1])], {
+                hintContent: val[2]
+            }, {
+                preset: 'islands#redDotIcon'
+            });
+            myMap.geoObjects.add(myPlacemark);
+        });
+    });
+}
 </script>
-
 </body>
-
 </html>
