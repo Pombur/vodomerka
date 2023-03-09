@@ -100,7 +100,7 @@ function showPosition(position) {
 
 
 
-      function startStop() {
+     function startStop() {
   const button = document.getElementById("start");
   const volume = document.getElementById("volume").value;
   const timer = document.getElementById("timer");
@@ -122,8 +122,24 @@ function showPosition(position) {
     const elapsedMinutes = (Date.now() - startTime) / 60000;
     const calculatedVolume = volume * 60 / elapsedMinutes;
     result.textContent = `Дебит скважины: ${calculatedVolume.toFixed(2)} Лит/Час`;
+    
+    // Get latitude and longitude
+    const latitude = userLocation.latitude;
+    const longitude = userLocation.longitude;
+    
+    // Construct the URL to submit the data to the Google Form
+    const url = "https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit?usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}&entry.1038701574=NAME&entry.1483754179=${latitude},${longitude}";
+    
+    // Submit the data to the Google Form
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.send();
   }
 }
+
+
+ //	https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit?  
+ //	usp=pp_url&entry.1481308283="${calculatedVolume.toFixed(2)}"&entry.1038701574=iPhone&entry.1483754179="${latitude}, ${longitude}"
 
     </script>
   </body>
