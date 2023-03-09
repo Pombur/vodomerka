@@ -9,16 +9,31 @@
     <p>Широта: <span id="latitude"></span></p>
     <p>Долгота: <span id="longitude"></span></p>
     <script type="text/javascript">
-        if(navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(function(position){
-                document.getElementById("latitude").innerHTML = position.coords.latitude;
-                document.getElementById("longitude").innerHTML = position.coords.longitude;
-            });
+        function getLocation() {
+            if(navigator.geolocation){
+                navigator.permissions.query({name:'geolocation'}).then(function(result) {
+                    if (result.state === 'granted') {
+                        navigator.geolocation.getCurrentPosition(showPosition);
+                    } else if (result.state === 'prompt') {
+                        navigator.geolocation.getCurrentPosition(showPosition);
+                    } else {
+                        document.getElementById("latitude").innerHTML = "Доступ к геолокации запрещен.";
+                        document.getElementById("longitude").innerHTML = "Доступ к геолокации запрещен.";
+                    }
+                });
+            }
+            else{
+                document.getElementById("latitude").innerHTML = "Геолокация не поддерживается в этом браузере.";
+                document.getElementById("longitude").innerHTML = "Геолокация не поддерживается в этом браузере.";
+            }
         }
-        else{
-            document.getElementById("latitude").innerHTML = "Геолокация не поддерживается в этом браузере.";
-            document.getElementById("longitude").innerHTML = "Геолокация не поддерживается в этом браузере.";
+
+        function showPosition(position) {
+            document.getElementById("latitude").innerHTML = position.coords.latitude;
+            document.getElementById("longitude").innerHTML = position.coords.longitude;
         }
+
+        getLocation();
     </script>
 </body>
 </html>
