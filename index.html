@@ -1,6 +1,39 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
+	<title>My Page</title>
+	<meta charset="utf-8">
+</head>
+<body>
+	<script>
+		// При загрузке страницы выводим уведомление
+window.onload = function() {
+  alert("Hello");
+};
+
+// При закрытии уведомления запросим доступ к местоположению пользователя
+window.addEventListener('beforeunload', function(event) {
+  event.preventDefault();
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      console.log("Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude);
+    });
+  } else {
+    console.log("Geolocation is not supported by this browser.");
+  }
+});
+
+	</script>
+
+	
+
+</body>
+
+
+
+
+
+
     <title>Водомерка от Илона Маска</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -121,7 +154,7 @@ function startStop() {
     const longitude = userLocation.longitude;
 
     // Construct the URL to submit the data to the Google Form
-    const url = `https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
+    const url = `https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)} л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
 
     // Submit the data to the Google Form using fetch API
     fetch(url, {
