@@ -25,9 +25,9 @@
   </head>
   <body>
     <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
-	<label for="volume1">Водомерка</label>
-	<label for="volume1">создана нейросетью</label>
-	<label for="volume0"></label>
+      <label for="volume1">Водомерка</label>
+      <label for="volume1">создана нейросетью</label>
+      <label for="volume0"></label>
       <label for="volume">Объём</label>
       <input type="number" id="volume" name="volume" value="5" maxlength="2"><br><br>
       <button id="start" onclick="startStop()">Старт</button>
@@ -39,68 +39,61 @@
     <script>
       let startTime;
       let timerId;
+      let userLocation;
 
-	function checkLocalStorage() {
-  const localStorageKey = "locationPermission";
-  const result = document.getElementById("result");
-  const button = document.getElementById("start");
+      function checkLocalStorage() {
+        const localStorageKey = "locationPermission";
+        const result = document.getElementById("result");
+        const button = document.getElementById("start");
 
-  navigator.permissions.query({ name: "geolocation" }).then((permissionStatus) => {
-    if (permissionStatus.state === "granted") {
-      const localStorageValue = localStorage.getItem(localStorageKey);
-      if (localStorageValue) {
-        getLocation();
-      } else {
-        localStorage.setItem(localStorageKey, "true");
-        getLocation();
-        result.textContent = "";
-        button.disabled = false;
+        navigator.permissions.query({ name: "geolocation" }).then((permissionStatus) => {
+          if (permissionStatus.state === "granted") {
+            const localStorageValue = localStorage.getItem(localStorageKey);
+            if (localStorageValue) {
+              getLocation();
+            } else {
+              localStorage.setItem(localStorageKey, "true");
+              getLocation();
+              result.textContent = "";
+              button.disabled = false;
+            }
+          } else {
+            result.textContent = "Разрешите доступ к местоположению";
+            button.disabled = true;
+            permissionStatus.onchange = () => {
+              if (permissionStatus.state === "granted") {
+                localStorage.setItem(localStorageKey, "true");
+                getLocation();
+                result.textContent = "";
+                button.disabled = false;
+              }
+            };
+          }
+        });
       }
-    } else {
-      result.textContent = "Разрешите доступ к местоположению";
-      button.disabled = true;
-      permissionStatus.onchange = () => {
-        if (permissionStatus.state === "granted") {
-          localStorage.setItem(localStorageKey, "true");
-          getLocation();
-          result.textContent = "";
-          button.disabled = false;
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+          alert("Geolocation is not supported by this browser.");
         }
-      };
-    }
-  });
-}
+      }
 
+      function showPosition(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const result = document.getElementById("result");
+        result.textContent = `Ваше местоположение: ${latitude}, ${longitude}`;
 
+        // Сохраняем координаты в переменных
+        userLocation = {
+          latitude,
+          longitude
+        };
+      }
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-    alert("Geolocation is not supported by this browser.");
-  }
-}
-
-function showPosition(position) {
-  const latitude = position.coords.latitude;
-  const longitude = position.coords.longitude;
-  const result = document.getElementById("result");
-  result.textContent = `Ваше местоположение: ${latitude}, ${longitude}`;
-
-  // Сохраняем координаты в переменных
-  const userLatitude = latitude;
-  const userLongitude = longitude;
-
-  // Или сохраняем координаты в объекте
-  const userLocation = {
-    latitude,
-    longitude
-  };
-}
-
-
-
-     function startStop() {
+       function startStop() {
   const button = document.getElementById("start");
   const volume = document.getElementById("volume").value;
   const timer = document.getElementById("timer");
@@ -128,8 +121,12 @@ function showPosition(position) {
     const longitude = userLocation.longitude;
     
     // Construct the URL to submit the data to the Google Form
-    const url = "https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit?usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}&entry.1038701574=NAME&entry.1483754179=${latitude},${longitude}";
     
+const url = `https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}&entry.1038701574=NAME&entry.1483754179=${latitude},${longitude}`;
+//checkLocalStorage();
+
+
+
     // Submit the data to the Google Form
     const xhr = new XMLHttpRequest();
     xhr.open("GET", url);
