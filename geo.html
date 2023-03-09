@@ -35,81 +35,96 @@
       <div id="timer">00:00</div>
       <br>
       <div id="result"></div>
-      <br>
-      <h1>Местоположение пользователя</h1>
-      <p>Широта: <span id="latitude"></span></p>
-      <p>Долгота: <span id="longitude"></span></p>
     </div>
     <script>
       let startTime;
       let timerId;
 
-      function startStop() {
-        const button = document.getElementById("start");
-        const volume = document.getElementById("volume").value;
-        const timer = document.getElementById("timer");
-        const result = document.getElementById("result");
+	function checkLocalStorage() {
+  const localStorageKey = "locationPermission";
+  const result = document.getElementById("result");
+  const button = document.getElementById("start");
 
-        if (button.textContent === "Старт") {
-          button.textContent = "Стоп";
-          startTime = Date.now();
-          timerId = setInterval(() => {
-            const elapsedTime = Date.now() - startTime;
-            const minutes = Math.floor(elapsedTime / 60000);
-            const seconds = Math.floor((elapsedTime % 60000) / 1000);
-            timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-          }, 1000);
-        } else {
-          button.textContent = "Старт";
-          clearInterval(timerId);
-          const elapsedMinutes = (Date.now() - startTime) / 60000;
-          const calculatedVolume = volume * 60 / elapsedMinutes;
-          result.textContent = `Дебит скважины: ${calculatedVolume.toFixed(2)} Лит/Час`;
-        }
-      }
-
-      function getLocation() {
-  if (navigator.geolocation) {
-    navigator.permissions.query({ name: "geolocation" }).then(function(result) {
-      if (result.state === "granted") {
-        navigator.geolocation.getCurrentPosition(showPosition);
-      } else if (result.state === "prompt") {
-        navigator.geolocation.getCurrentPosition(showPosition, showError);
+  navigator.permissions.query({ name: "geolocation" }).then((permissionStatus) => {
+    if (permissionStatus.state === "granted") {
+      const localStorageValue = localStorage.getItem(localStorageKey);
+      if (localStorageValue) {
+        getLocation();
       } else {
-        document.getElementById("latitude").innerHTML = "Доступ к геолокации запрещен.";
-        document.getElementById("longitude").innerHTML = "Доступ к геолокации запрещен.";
+        localStorage.setItem(localStorageKey, "true");
+        getLocation();
+        result.textContent = "";
+        button.disabled = false;
       }
-    });
+    } else {
+      result.textContent = "Разрешите доступ к местоположению";
+      button.disabled = true;
+      permissionStatus.onchange = () => {
+        if (permissionStatus.state === "granted") {
+          localStorage.setItem(localStorageKey, "true");
+          getLocation();
+          result.textContent = "";
+          button.disabled = false;
+        }
+      };
+    }
+  });
+}
+
+
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
   } else {
-    document.getElementById("latitude").innerHTML = "Геолокация не поддерживается в этом браузере.";
-    document.getElementById("longitude").innerHTML = "Геолокация не поддерживается в этом браузере.";
+    alert("Geolocation is not supported by this browser.");
   }
 }
 
 function showPosition(position) {
-  document.getElementById("latitude").innerHTML = position.coords.latitude;
-  document.getElementById("longitude").innerHTML = position.coords.longitude;
+  const latitude = position.coords.latitude;
+  const longitude = position.coords.longitude;
+  const result = document.getElementById("result");
+  result.textContent = `Ваше местоположение: ${latitude}, ${longitude}`;
+
+  // Сохраняем координаты в переменных
+  const userLatitude = latitude;
+  const userLongitude = longitude;
+
+  // Или сохраняем координаты в объекте
+  const userLocation = {
+    latitude,
+    longitude
+  };
 }
 
-function showError(error) {
-  switch (error.code) {
-    case error.PERMISSION_DENIED:
-      document.getElementById("latitude").innerHTML = "Доступ к геолокации запрещен пользователем.";
-      document.getElementById("longitude").innerHTML = "Доступ к геолокации запрещен пользователем.";
-      break;
-    case error.POSITION_UNAVAILABLE:
-      document.getElementById("latitude").innerHTML = "Информация о местоположении недоступна.";
-      document.getElementById("longitude").innerHTML = "Информация о местоположении недоступна.";
-      break;
-    case error.TIMEOUT:
-      document.getElementById("latitude").innerHTML = "Таймаут запроса местоположения.";
-      document.getElementById("longitude").innerHTML = "Таймаут запроса местоположения.";
-      break;
-    default:
-      document.getElementById("latitude").innerHTML = "Произошла неизвестная ошибка.";
-      document.getElementById("longitude").innerHTML = "Произошла неизвестная ошибка.";
-      break;
+
+
+      function startStop() {
+  const button = document.getElementById("start");
+  const volume = document.getElementById("volume").value;
+  const timer = document.getElementById("timer");
+  const result = document.getElementById("result");
+
+  if (button.textContent === "Старт") {
+    button.textContent = "Стоп";
+    getLocation();
+    startTime = Date.now();
+    timerId = setInterval(() => {
+      const elapsedTime = Date.now() - startTime;
+      const minutes = Math.floor(elapsedTime / 60000);
+      const seconds = Math.floor((elapsedTime % 60000) / 1000);
+      timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+    }, 1000);
+  } else {
+    button.textContent = "Старт";
+    clearInterval(timerId);
+    const elapsedMinutes = (Date.now() - startTime) / 60000;
+    const calculatedVolume = volume * 60 / elapsedMinutes;
+    result.textContent = `Дебит скважины: ${calculatedVolume.toFixed(2)} Лит/Час`;
   }
 }
 
-getLocation();
+    </script>
+  </body>
+</html>
