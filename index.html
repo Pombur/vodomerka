@@ -6,22 +6,32 @@
 </head>
 <body>
 	<script>
-		// При загрузке страницы выводим уведомление
-window.onload = function() {
-  alert("Для корректной работы предоставте разрешения");
-};
+		if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+} else {
+  // Ваш браузер не поддерживает геолокацию
+}
 
-// При закрытии уведомления запросим доступ к местоположению пользователя
-window.addEventListener('beforeunload', function(event) {
-  event.preventDefault();
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      console.log("Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude);
-    });
-  } else {
-    console.log("Geolocation is not supported by this browser.");
+function successFunction(position) {
+  // Пользователь разрешил определение местоположения
+}
+
+function errorFunction(error) {
+  // Пользователь не разрешил определение местоположения
+  alert("Для определения вашего местоположения необходимо разрешить доступ к геолокации.");
+}
+
+window.onload = function() {
+  if (!navigator.geolocation) {
+    // Ваш браузер не поддерживает геолокацию
+    return;
   }
-});
+  navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
+    if (permissionStatus.state !== 'granted') {
+      alert("Hello");
+    }
+  });
+};
 
 	</script>
 
