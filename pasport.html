@@ -1,89 +1,87 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset="UTF-8">
   <title>Паспорт скважины</title>
 </head>
-
 <body>
   <h1>Паспорт скважины</h1>
-  <form>
-    <p>
-      <label for="coordinates">Географические координаты скважины:</label><br>
-      <input type="text" id="coordinates" name="coordinates" required>
-    </p>
-    <p>
-      <label for="depth">Глубина скважины:</label><br>
-      <input type="number" id="depth" name="depth" required>
-    </p>
-    <p>
-      <label for="drilling-solution">Диаметр и тип бурового раствора:</label><br>
-      <input type="text" id="drilling-solution" name="drilling-solution" required>
-    </p>
-    <p>
-      <label>Данные о качестве воды:</label><br>
-      <label for="ph">pH:</label>
-      <input type="number" step="0.01" id="ph" name="ph" required><br>
-      <label for="temperature">Температура:</label>
-      <input type="number" step="0.1" id="temperature" name="temperature" required><br>
-      <label for="mineralization">Минерализация:</label>
-      <input type="number" step="0.01" id="mineralization" name="mineralization" required><br>
-      <label for="iron">Содержание железа:</label>
-      <input type="number" step="0.01" id="iron" name="iron" required><br>
-      <label for="manganese">Содержание марганца:</label>
-      <input type="number" step="0.01" id="manganese" name="manganese" required><br>
-      <label for="bacteria">Содержание бактерий:</label>
-      <input type="number" step="0.01" id="bacteria" name="bacteria" required>
-    </p>
-    <p>
-      <label for="operation">Режим работы скважины и ее производительность:</label><br>
-      <textarea id="operation" name="operation" required></textarea>
-    </p>
-    <p>
-      <label for="monitoring">Дата последнего мониторинга качества воды и результаты анализов:</label><br>
-      <textarea id="monitoring" name="monitoring" required></textarea>
-    </p>
-    <button type="button" onclick="saveData()">Сохранить</button>
+  <form id="myForm">
+    <label>Географические координаты скважины:</label>
+    <input type="text" name="coordinates"><br>
+
+    <label>Глубина скважины:</label>
+    <input type="number" name="depth"><br>
+
+    <label>Диаметр и тип бурового раствора:</label>
+    <input type="text" name="drilling-solution"><br>
+
+    <label>Данные о качестве воды:</label><br>
+    <label>pH:</label>
+    <input type="number" name="ph"><br>
+    <label>Температура:</label>
+    <input type="number" name="temperature"><br>
+    <label>Минерализация:</label>
+    <input type="number" name="mineralization"><br>
+    <label>Содержание железа:</label>
+    <input type="number" name="iron"><br>
+    <label>Содержание марганца:</label>
+    <input type="number" name="manganese"><br>
+    <label>Содержание бактерий:</label>
+    <input type="text" name="bacteria"><br>
+
+    <label>Режим работы скважины и ее производительность:</label>
+    <input type="text" name="operation"><br>
+
+    <label>Дата последнего мониторинга качества воды и результаты анализов:</label>
+    <textarea name="monitoring"></textarea><br>
+
+    <input type="submit" value="Сохранить" onclick="saveData()">
   </form>
 
   <script>
-function saveData() {
-const coordinates = document.getElementById("coordinates").value;
-const depth = document.getElementById("depth").value;
-const drillingSolution = document.getElementById("drilling-solution").value;
-const pH = document.getElementById("ph").value;
-const temperature = document.getElementById("temperature").value;
-const mineralization = document.getElementById("mineralization").value;
-const iron = document.getElementById("iron").value;
-const manganese = document.getElementById("manganese").value;
-const bacteria = document.getElementById("bacteria").value;
-const operation = document.getElementById("operation").value;
-const monitoring = document.getElementById("monitoring").value;
+    function saveData() {
+  const coordinates = document.getElementsByName("coordinates")[0].value;
+  const depth = document.getElementsByName("depth")[0].value;
+  const drillingSolution = document.getElementsByName("drilling-solution")[0].value;
+  const pH = document.getElementsByName("ph")[0].value;
+  const temperature = document.getElementsByName("temperature")[0].value;
+  const mineralization = document.getElementsByName("mineralization")[0].value;
+  const iron = document.getElementsByName("iron")[0].value;
+  const manganese = document.getElementsByName("manganese")[0].value;
+  const bacteria = document.getElementsByName("bacteria")[0].value;
+  const operation = document.getElementsByName("operation")[0].value;
+  const monitoring = document.getElementsByName("monitoring")[0].value;
 
-const pdfTemplate = ` Паспорт Скважины
+  const data = `
+    Паспорт Скважины
+    Географические данные - ${coordinates}
+    Глубина скважины - ${depth}
+    Диаметр и тип бурового раствора - ${drillingSolution}
+    Данные о качестве воды:
+      pH - ${pH}
+      Температура - ${temperature}
+      Минерализация - ${mineralization}
+      Содержание железа - ${iron}
+      Содержание марганица - ${manganese}
+      Содержание бактерий - ${bacteria}
+    Режим работы скважины - ${operation}
+    Дата последнего мониторинга качества воды и результаты анализов - ${monitoring}
+  `;
 
-Географические данные - ${coordinates}
-Глубина скважины - ${depth}
-Диаметр и тип бурового раствора - ${drillingSolution}
-Данные о качестве воды:
-pH - ${pH}
-Температура - ${temperature}
-Минерализация - ${mineralization}
-Содержание железа - ${iron}
-Содержание марганца - ${manganese}
-Содержание бактерий - ${bacteria}
-Режим работы скважины - ${operation}
-Дата последнего мониторинга качества воды и результаты анализов - ${monitoring}`;
-
-const file = new Blob([pdfTemplate], { type: 'application/pdf' });
-const fileURL = URL.createObjectURL(file);
-const a = document.createElement("a");
-a.href = fileURL;
-a.download = "data.pdf";
-a.click();
+  const file = new Blob([data], {type: "text/plain"});
+  const a = document.createElement("a");
+  const url = URL.createObjectURL(file);
+  a.href = url;
+  a.download = "data.txt";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);  
+  }, 0);
 }
-</script>
 
-  </body>
+     
+  </script>
+</body>
 </html>
