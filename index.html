@@ -154,7 +154,7 @@ function startStop() {
     const elapsedMinutes = (Date.now() - startTime) / 60000;
     const calculatedVolume = volume * 60 / elapsedMinutes;
     result.textContent = `Дебит скважины: ${calculatedVolume.toFixed(2)} Лит/Час`;
-	result.textContent = ` ${env.API_GOOGLE_SHEETS}`;
+	
     // Get latitude and longitude
     const latitude = userLocation.latitude;
     const longitude = userLocation.longitude;
