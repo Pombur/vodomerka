@@ -7,50 +7,55 @@
   <h1>Паспорт скважины</h1>
   <form id="myForm">
     <label>Географические координаты скважины:</label>
-    <input type="text" name="coordinates"><br>
+    <input type="text" id="coordinates"><br>
 
     <label>Глубина скважины:</label>
-    <input type="number" name="depth"><br>
+    <input type="number" id="depth"><br>
 
     <label>Диаметр и тип бурового раствора:</label>
-    <input type="text" name="drilling-solution"><br>
+    <input type="text" id="drilling-solution"><br>
 
     <label>Данные о качестве воды:</label><br>
     <label>pH:</label>
-    <input type="number" name="ph"><br>
+    <input type="number" id="ph"><br>
     <label>Температура:</label>
-    <input type="number" name="temperature"><br>
+    <input type="number" id="temperature"><br>
     <label>Минерализация:</label>
-    <input type="number" name="mineralization"><br>
+    <input type="number" id="mineralization"><br>
     <label>Содержание железа:</label>
-    <input type="number" name="iron"><br>
+    <input type="number" id="iron"><br>
     <label>Содержание марганца:</label>
-    <input type="number" name="manganese"><br>
+    <input type="number" id="manganese"><br>
     <label>Содержание бактерий:</label>
-    <input type="text" name="bacteria"><br>
+    <input type="text" id="bacteria"><br>
 
     <label>Режим работы скважины и ее производительность:</label>
-    <input type="text" name="operation"><br>
+    <input type="text" id="operation"><br>
 
     <label>Дата последнего мониторинга качества воды и результаты анализов:</label>
-    <textarea name="monitoring"></textarea><br>
+    <textarea id="monitoring"></textarea><br>
 
-    <input type="submit" value="Сохранить" onclick="saveData()">
+    <input type="button" value="Сохранить" onclick="saveData()">
   </form>
 
   <script>
     function saveData() {
-  const coordinates = document.getElementsByName("coordinates")[0].value;
-  const depth = document.getElementsByName("depth")[0].value;
-  const drillingSolution = document.getElementsByName("drilling-solution")[0].value;
-  const pH = document.getElementsByName("ph")[0].value;
-  const temperature = document.getElementsByName("temperature")[0].value;
-  const mineralization = document.getElementsByName("mineralization")[0].value;
-  const iron = document.getElementsByName("iron")[0].value;
-  const manganese = document.getElementsByName("manganese")[0].value;
-  const bacteria = document.getElementsByName("bacteria")[0].value;
-  const operation = document.getElementsByName("operation")[0].value;
-  const monitoring = document.getElementsByName("monitoring")[0].value;
+  const coordinates = document.getElementById("coordinates").value;
+  const depth = document.getElementById("depth").value;
+  const drillingSolution = document.getElementById("drilling-solution").value;
+  const pH = document.getElementById("ph").value;
+  const temperature = document.getElementById("temperature").value;
+  const mineralization = document.getElementById("mineralization").value;
+  const iron = document.getElementById("iron").value;
+  const manganese = document.getElementById("manganese").value;
+  const bacteria = document.getElementById("bacteria").value;
+  const operation = document.getElementById("operation").value;
+  const monitoring = document.getElementById("monitoring").value;
+
+  if (!coordinates || !depth || !drillingSolution || !pH || !temperature || !mineralization || !iron || !manganese || !bacteria || !operation || !monitoring) {
+    alert("Пожалуйста, заполните все поля перед сохранением!");
+    return;
+  }
 
   const data = `
     Паспорт Скважины
@@ -69,19 +74,28 @@
   `;
 
   const file = new Blob([data], {type: "text/plain"});
-  const a = document.createElement("a");
-  const url = URL.createObjectURL(file);
-  a.href = url;
-  a.download = "data.txt";
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => {
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);  
-  }, 0);
+
+  if (window.navigator.msSaveBlob) {
+    // для Internet Explorer
+    window.navigator.msSaveBlob(file, "data.txt");
+  } else if (window.webkitSaveBlob) {
+    // для Safari
+    window.webkitSaveBlob(file, "data.txt");
+  } else {
+    // для других браузеров
+    const a = document.createElement("a");
+    const url = URL.createObjectURL(file);
+    a.href = url;
+    a.download = "data.txt";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);  
+    }, 0);
+  }
 }
 
-     
-  </script>
+</script>
 </body>
 </html>
