@@ -2,50 +2,6 @@
 <html>
 <head>
   <title>Паспорт скважины</title>
-</head>
-<body>
-  <h1>Паспорт скважины</h1>
-  <form id="myForm">
-    <label>Географические координаты скважины:</label>
-    <input type="text" id="coordinates"><br>
-
-    <label>Глубина скважины:</label>
-    <input type="number" id="depth"><br>
-
-    <label>Диаметр и тип бурового раствора:</label>
-    <input type="text" id="drilling-solution"><br>
-
-    <label>Данные о качестве воды:</label><br>
-    <label>pH:</label>
-    <input type="number" id="ph"><br>
-    <label>Температура:</label>
-    <input type="number" id="temperature"><br>
-    <label>Минерализация:</label>
-    <input type="number" id="mineralization"><br>
-    <label>Содержание железа:</label>
-    <input type="number" id="iron"><br>
-    <label>Содержание марганца:</label>
-    <input type="number" id="manganese"><br>
-    <label>Содержание бактерий:</label>
-    <input type="text" id="bacteria"><br>
-
-    <label>Режим работы скважины и ее производительность:</label>
-    <input type="text" id="operation"><br>
-
-  
-
-    <input type="button" value="Сохранить" onclick="saveData()">
-  </form>
-
-  <script>
-
-function generateMonitoringData() {
-  const date = new Date().toLocaleDateString();  
-  return `${date}`;
-}<!DOCTYPE html>
-<html>
-<head>
-  <title>Паспорт скважины</title>
   <style>
     label {
       display: inline-block;
@@ -144,54 +100,6 @@ function generateMonitoringData() {
   const date = new Date().toISOString().slice(0, 10); // получаем текущую дату в формате "yyyy-mm-dd"
 a.download = `Well_${date}.txt`; // добавляем дату в имя файла
 
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => {
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);  
-  }, 0);
-}
-
-
-</script>
-</body>
-</html>
-
-
-    function saveData() {
-  const coordinates = document.getElementById("coordinates").value;
-  const depth = document.getElementById("depth").value;
-  const drillingSolution = document.getElementById("drilling-solution").value;
-  const pH = document.getElementById("ph").value;
-  const temperature = document.getElementById("temperature").value;
-  const mineralization = document.getElementById("mineralization").value;
-  const iron = document.getElementById("iron").value;
-  const manganese = document.getElementById("manganese").value;
-  const bacteria = document.getElementById("bacteria").value;
-  const operation = document.getElementById("operation").value;
-  const monitoring = generateMonitoringData();
-
-  const data = `
-    Паспорт Скважины
-    Географические данные - ${coordinates}
-    Глубина скважины - ${depth}
-    Диаметр и тип бурового раствора - ${drillingSolution}
-    Данные о качестве воды:
-      pH - ${pH}
-      Температура - ${temperature}
-      Минерализация - ${mineralization}
-      Содержание железа - ${iron}
-      Содержание марганица - ${manganese}
-      Содержание бактерий - ${bacteria}
-    Режим работы скважины - ${operation}
-    Дата мониторинга: ${monitoring}
-  `;
-
-  const file = new Blob([data], {type: "text/plain"});
-  const a = document.createElement("a");
-  const url = URL.createObjectURL(file);
-  a.href = url;
-  a.download = "pasport_well.txt";
   document.body.appendChild(a);
   a.click();
   setTimeout(() => {
