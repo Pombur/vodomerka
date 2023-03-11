@@ -75,9 +75,7 @@ window.onload = function() {
     </div>
     <script>
 
-	    require('dotenv').config()
-const apiKey = process.env.API_GOOGLE_SHEETS;
-
+	    	require('dotenv').config()
       let startTime;
       let timerId;
       let userLocation;
@@ -86,7 +84,7 @@ const apiKey = process.env.API_GOOGLE_SHEETS;
         const localStorageKey = "locationPermission";
         const result = document.getElementById("result");
         const button = document.getElementById("start");
-	const api_key = process.env.API_GOOGLE_SHEETS;
+	const apiKey = process.env.API_GOOGLE_SHEETS;
 	      
         navigator.permissions.query({ name: "geolocation" }).then((permissionStatus) => {
           if (permissionStatus.state === "granted") {
