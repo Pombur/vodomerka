@@ -24,7 +24,7 @@
     <label>Глубина скважины:</label>
     <input type="number" id="depth"><br>
 
-    <label>Диаметр и тип бурового раствора:</label>
+    <label>Диаметр и тип фильтра:</label>
     <input type="text" id="drilling-solution"><br>
 
     <label>Данные о качестве воды:</label><br>
@@ -71,26 +71,26 @@ function generateMonitoringData() {
   const monitoring = generateMonitoringData();
 
   const data = `
-    		Паспорт Скважины
+    	Паспорт Скважины
 
-    Географические данные - ${coordinates}
+ Географические данные - ${coordinates}
 
-    Глубина скважины - ${depth}
+ Глубина скважины - ${depth}
 
-    Диаметр и тип бурового раствора - ${drillingSolution}
+ Диаметр и тип фмлтра - ${drillingSolution}
 
-    Данные о качестве воды:
+   Данные о качестве воды:
 
-      pH - ${pH}
-      Температура - ${temperature}
-      Минерализация - ${mineralization}
-      Содержание железа - ${iron}
-      Содержание марганица - ${manganese}
-      Содержание бактерий - ${bacteria}
+     pH - ${pH}
+     Температура - ${temperature}
+     Минерализация - ${mineralization}
+     Содержание железа - ${iron}
+     Содержание марганица - ${manganese}
+     Содержание бактерий - ${bacteria}
 
-    Режим работы скважины - ${operation}
+ Режим работы скважины - ${operation}
 
-    Дата мониторинга: ${monitoring}
+ Дата мониторинга: ${monitoring}
   `;
 
   const file = new Blob([data], {type: "text/plain"});
