@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	require('dotenv').config()
 	<title>Водомерка</title>
 	<meta charset="utf-8">
 	 <link rel="icon" href="path/to/oa.png" type="image/png">
@@ -75,8 +76,7 @@ window.onload = function() {
     </div>
     <script>
 
-	    	require('dotenv').config()
-      let startTime;
+   let startTime;
       let timerId;
       let userLocation;
 
@@ -84,7 +84,7 @@ window.onload = function() {
         const localStorageKey = "locationPermission";
         const result = document.getElementById("result");
         const button = document.getElementById("start");
-	const apiKey = process.env.API_GOOGLE_SHEETS;
+	
 	      
         navigator.permissions.query({ name: "geolocation" }).then((permissionStatus) => {
           if (permissionStatus.state === "granted") {
@@ -159,6 +159,7 @@ function startStop() {
     // Get latitude and longitude
     const latitude = userLocation.latitude;
     const longitude = userLocation.longitude;
+	const apiKey = process.env.API_GOOGLE_SHEETS;
 
     // Construct the URL to submit the data to the Google Form
     const url = `https://docs.google.com/forms/d/e/${apiKey}/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
