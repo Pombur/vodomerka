@@ -32,13 +32,19 @@
     <label>Режим работы скважины и ее производительность:</label>
     <input type="text" id="operation"><br>
 
-    <label>Дата последнего мониторинга качества воды и результаты анализов:</label>
-    <textarea id="monitoring"></textarea><br>
+  
 
     <input type="button" value="Сохранить" onclick="saveData()">
   </form>
 
   <script>
+
+function generateMonitoringData() {
+  const date = new Date().toLocaleDateString();  
+  return `${date}`;
+}
+
+
     function saveData() {
   const coordinates = document.getElementById("coordinates").value;
   const depth = document.getElementById("depth").value;
@@ -50,12 +56,7 @@
   const manganese = document.getElementById("manganese").value;
   const bacteria = document.getElementById("bacteria").value;
   const operation = document.getElementById("operation").value;
-  const monitoring = document.getElementById("monitoring").value;
-
-  if (!coordinates || !depth || !drillingSolution || !pH || !temperature || !mineralization || !iron || !manganese || !bacteria || !operation || !monitoring) {
-    alert("Пожалуйста, заполните все поля перед сохранением!");
-    return;
-  }
+  const monitoring = generateMonitoringData();
 
   const data = `
     Паспорт Скважины
@@ -70,31 +71,22 @@
       Содержание марганица - ${manganese}
       Содержание бактерий - ${bacteria}
     Режим работы скважины - ${operation}
-    Дата последнего мониторинга качества воды и результаты анализов - ${monitoring}
+    Дата мониторинга: ${monitoring}
   `;
 
   const file = new Blob([data], {type: "text/plain"});
-
-  if (window.navigator.msSaveBlob) {
-    // для Internet Explorer
-    window.navigator.msSaveBlob(file, "data.txt");
-  } else if (window.webkitSaveBlob) {
-    // для Safari
-    window.webkitSaveBlob(file, "data.txt");
-  } else {
-    // для других браузеров
-    const a = document.createElement("a");
-    const url = URL.createObjectURL(file);
-    a.href = url;
-    a.download = "data.txt";
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);  
-    }, 0);
-  }
+  const a = document.createElement("a");
+  const url = URL.createObjectURL(file);
+  a.href = url;
+  a.download = "data.txt";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);  
+  }, 0);
 }
+
 
 </script>
 </body>
