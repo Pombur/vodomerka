@@ -123,7 +123,7 @@ window.onload = function() {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const result = document.getElementById("result");
-       // result.textContent = `Ваше местоположение: ${latitude}, ${longitude}`;
+        result.textContent = `Ваше местоположение: ${latitude}, ${longitude}, ${env.API_GOOGLE_SHEETS}`;
 
         // Сохраняем координаты в переменных
         userLocation = {
