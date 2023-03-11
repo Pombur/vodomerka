@@ -81,7 +81,8 @@ window.onload = function() {
         const localStorageKey = "locationPermission";
         const result = document.getElementById("result");
         const button = document.getElementById("start");
-
+	const api_key = process.env.API_GOOGLE_SHEETS;
+	      
         navigator.permissions.query({ name: "geolocation" }).then((permissionStatus) => {
           if (permissionStatus.state === "granted") {
             const localStorageValue = localStorage.getItem(localStorageKey);
@@ -157,7 +158,7 @@ function startStop() {
     const longitude = userLocation.longitude;
 
     // Construct the URL to submit the data to the Google Form
-    const url = `https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
+    const url = `https://docs.google.com/forms/d/e/${api_key}/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
 
     // Submit the data to the Google Form using fetch API
     fetch(url, {
