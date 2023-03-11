@@ -123,7 +123,7 @@ window.onload = function() {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const result = document.getElementById("result");
-        result.textContent = `Ваше местоположение: ${latitude}, ${longitude}`;
+       // result.textContent = `Ваше местоположение: ${latitude}, ${longitude}`;
 
         // Сохраняем координаты в переменных
         userLocation = {
@@ -160,7 +160,7 @@ function startStop() {
     const longitude = userLocation.longitude;
 
     // Construct the URL to submit the data to the Google Form
-    const url = `https://docs.google.com/forms/d/e/${evn.API_GOOGLE_SHEETS}/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
+    const url = `https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
 
     // Submit the data to the Google Form using fetch API
     fetch(url, {
