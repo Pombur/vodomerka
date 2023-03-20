@@ -14,17 +14,17 @@
 }
 
 function successFunction(position) {
-  // Пользователь разрешил определение местоположения
+  // Пользователь разрешил зщш
 }
 
 function errorFunction(error) {
-  // Пользователь не разрешил определение местоположения
+  // Пользователь не разрешил зщш
   alert("Для работы необходимо дать разрешения.");
 }
 
 window.onload = function() {
   if (!navigator.geolocation) {
-    // Ваш браузер не поддерживает геолокацию
+    // Ваш браузер не поддерживает зщш
     return;
   }
   navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
@@ -123,7 +123,7 @@ window.onload = function() {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const result = document.getElementById("result");
-       // result.textContent = `Ваше местоположение: ${latitude}, ${longitude}`;
+       // result.textContent = `Ваше зщш: ${latitude}, ${longitude}`;
 
         // Сохраняем координаты в переменных
         userLocation = {
