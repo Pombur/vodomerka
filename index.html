@@ -14,17 +14,17 @@
 }
 
 function successFunction(position) {
-  // Пользователь разрешил зщш
+  // Пользователь разрешил определение местоположения
 }
 
 function errorFunction(error) {
-  // Пользователь не разрешил зщш
+  // Пользователь не разрешил определение местоположения
   alert("Для работы необходимо дать разрешения.");
 }
 
 window.onload = function() {
   if (!navigator.geolocation) {
-    // Ваш браузер не поддерживает зщш
+    // Ваш браузер не поддерживает геолокацию
     return;
   }
   navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
@@ -123,7 +123,7 @@ window.onload = function() {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const result = document.getElementById("result");
-       // result.textContent = `Ваше зщш: ${latitude}, ${longitude}`;
+       // result.textContent = `Ваше местоположение: ${latitude}, ${longitude}`;
 
         // Сохраняем координаты в переменных
         userLocation = {
@@ -138,9 +138,6 @@ function startStop() {
   const timer = document.getElementById("timer");
   const result = document.getElementById("result");
 
-  let startTime = 0;
-  let calculatedVolume = 0;
-
   if (button.textContent === "Старт") {
     button.textContent = "Стоп";
     getLocation();
@@ -149,21 +146,14 @@ function startStop() {
       const elapsedTime = Date.now() - startTime;
       const minutes = Math.floor(elapsedTime / 60000);
       const seconds = Math.floor((elapsedTime % 60000) / 1000);
-      const milliseconds = Math.floor(elapsedTime % 1000);
-      timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}.${milliseconds < 100 ? "0" + milliseconds : milliseconds}`;
-      
-      // Проверяем, что время, прошедшее с момента запуска таймера, не равно нулю
-      if (elapsedTime !== 0) {
-        calculatedVolume = volume * 60 / (elapsedTime / 60000);
-      }
-      result.textContent = `Дебит скважины: ${calculatedVolume.toFixed(2)} Лит/Час`;
-    }, 10); // обновляем таймер каждые 10 миллисекунд
+      timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+    }, 1000);
   } else {
     button.textContent = "Старт";
     clearInterval(timerId);
-
-
-
+    const elapsedMinutes = (Date.now() - startTime) / 60000;
+    const calculatedVolume = volume * 60 / elapsedMinutes;
+    result.textContent = `Дебит скважины: ${calculatedVolume.toFixed(2)} Лит/Час`;
 	
     // Get latitude and longitude
     const latitude = userLocation.latitude;
