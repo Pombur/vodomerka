@@ -132,9 +132,39 @@ window.onload = function() {
         };
       }
 
+function calculateVolume() {
+  const volume = document.getElementById("volume").value;
+  const elapsedTime = Date.now() - startTime;
+  let calculatedVolume = 0;
+
+  if (elapsedTime !== 0) {
+    calculatedVolume = volume * 60 / (elapsedTime / 60000);
+  }
+
+  return calculatedVolume.toFixed(2);
+}
+
+function sendData() {
+  // Get latitude and longitude
+  const latitude = userLocation.latitude;
+  const longitude = userLocation.longitude;
+
+  // Calculate volume
+  const calculatedVolume = calculateVolume();
+
+  // Only submit the data if the calculated volume is not 0.00
+  if (calculatedVolume !== "0.00") {
+    // Construct the URL to submit the data to the Google Form
+    const url = `https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
+
+    // Submit the data to the Google Form using fetch API
+    fetch(url, {
+      method: 'POST'
+    });
+  }
+}
 function startStop() {
   const button = document.getElementById("start");
-  const volume = document.getElementById("volume").value;
   const timer = document.getElementById("timer");
   const result = document.getElementById("result");
 
@@ -146,28 +176,20 @@ function startStop() {
       const elapsedTime = Date.now() - startTime;
       const minutes = Math.floor(elapsedTime / 60000);
       const seconds = Math.floor((elapsedTime % 60000) / 1000);
-      timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-    }, 1000);
+      const milliseconds = Math.floor(elapsedTime % 1000);
+      timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}.${milliseconds < 100 ? "0" + milliseconds : milliseconds}`;
+
+      result.textContent = `Дебит скважины: ${calculateVolume()} Лит/Час`;
+
+    }, 10); // обновляем таймер каждые 10 миллисекунд
   } else {
     button.textContent = "Старт";
     clearInterval(timerId);
-    const elapsedMinutes = (Date.now() - startTime) / 60000;
-    const calculatedVolume = volume * 60 / elapsedMinutes;
-    result.textContent = `Дебит скважины: ${calculatedVolume.toFixed(2)} Лит/Час`;
-	
-    // Get latitude and longitude
-    const latitude = userLocation.latitude;
-    const longitude = userLocation.longitude;
-
-    // Construct the URL to submit the data to the Google Form
-    const url = `https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
-
-    // Submit the data to the Google Form using fetch API
-    fetch(url, {
-      method: 'POST'
-    });
+    sendData();
   }
 }
+
+
 
 
 
