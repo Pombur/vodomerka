@@ -138,6 +138,9 @@ function startStop() {
   const timer = document.getElementById("timer");
   const result = document.getElementById("result");
 
+  let startTime = 0;
+  let calculatedVolume = 0;
+
   if (button.textContent === "Старт") {
     button.textContent = "Стоп";
     getLocation();
@@ -146,14 +149,21 @@ function startStop() {
       const elapsedTime = Date.now() - startTime;
       const minutes = Math.floor(elapsedTime / 60000);
       const seconds = Math.floor((elapsedTime % 60000) / 1000);
-      timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-    }, 1000);
+      const milliseconds = Math.floor(elapsedTime % 1000);
+      timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}.${milliseconds < 100 ? "0" + milliseconds : milliseconds}`;
+      
+      // Проверяем, что время, прошедшее с момента запуска таймера, не равно нулю
+      if (elapsedTime !== 0) {
+        calculatedVolume = volume * 60 / (elapsedTime / 60000);
+      }
+      result.textContent = `Дебит скважины: ${calculatedVolume.toFixed(2)} Лит/Час`;
+    }, 10); // обновляем таймер каждые 10 миллисекунд
   } else {
     button.textContent = "Старт";
     clearInterval(timerId);
-    const elapsedMinutes = (Date.now() - startTime) / 60000;
-    const calculatedVolume = volume * 60 / elapsedMinutes;
-    result.textContent = `Дебит скважины: ${calculatedVolume.toFixed(2)} Лит/Час`;
+
+
+
 	
     // Get latitude and longitude
     const latitude = userLocation.latitude;
