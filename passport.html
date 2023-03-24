@@ -45,6 +45,9 @@
 
     <label for="drilling-solution">Диаметр и тип фильтра:</label>
     <input type="text" id="drilling-solution">
+    
+     <label for="operation">Режим работы скважины и ее производительность:</label>
+    <input type="text" id="operation">
 
     <label for="ph">Данные о качестве воды:</label>
     <label for="ph">pH:</label>
@@ -60,8 +63,6 @@
     <label for="bacteria">Содержание бактерий:</label>
     <input type="text" id="bacteria">
 
-    <label for="operation">Режим работы скважины и ее производительность:</label>
-    <input type="text" id="operation">
 
     <input type="button" value="Сохранить" onclick="saveData()">
   </form>
@@ -86,7 +87,7 @@
   const monitoring = generateMonitoringData();
 
   const data = `
-    		Паспорт Скважины
+   	Паспорт Скважины
 
   Географические данные - ${coordinates}
 
