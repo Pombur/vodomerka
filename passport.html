@@ -2,14 +2,29 @@
 <html>
 <head>
   <title>Паспорт скважины</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     label {
-      display: inline-block;
-      width: 400px;
-      vertical-align: centr;
+      display: block;
+      margin-bottom: 10px;
     }
     input {
-      width: 100px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 5px;
+      margin-bottom: 20px;
+    }
+    @media screen and (min-width: 600px) {
+      label {
+        display: inline-block;
+        width: 400px;
+        vertical-align: middle;
+      }
+      input {
+        width: 100px;
+        margin-right: 10px;
+        margin-bottom: 0;
+      }
     }
   </style>
 </head>
@@ -18,48 +33,47 @@
   <h1>Паспорт скважины</h1>
   <form id="myForm">
 
-    <label>Географические координаты скважины:</label>
-    <input type="text" id="coordinates"><br>
+    <label for="coordinates">Географические координаты скважины:</label>
+    <input type="text" id="coordinates">
 
-    <label>Глубина скважины:</label>
-    <input type="number" id="depth"><br>
+    <label for="depth">Глубина скважины:</label>
+    <input type="number" id="depth">
 
-    <label>Диаметр и тип фильтра:</label>
-    <input type="text" id="drilling-solution"><br>
+<label for="depth">Статический уровень:</label>
+    <input type="number" id="static">
 
-    <label>Данные о качестве воды:</label><br>
-    <label>pH:</label>
-    <input type="number" id="ph"><br>
-    <label>Температура:</label>
-    <input type="number" id="temperature"><br>
-    <label>Минерализация:</label>
-    <input type="number" id="mineralization"><br>
-    <label>Содержание железа:</label>
-    <input type="number" id="iron"><br>
-    <label>Содержание марганца:</label>
-    <input type="number" id="manganese"><br>
-    <label>Содержание бактерий:</label>
-    <input type="text" id="bacteria"><br>
+    <label for="drilling-solution">Диаметр и тип фильтра:</label>
+    <input type="text" id="drilling-solution">
 
-    <label>Режим работы скважины и ее производительность:</label>
-    <input type="text" id="operation"><br>
+    <label for="ph">Данные о качестве воды:</label>
+    <label for="ph">pH:</label>
+    <input type="number" id="ph">
+    <label for="temperature">Температура:</label>
+    <input type="number" id="temperature">
+    <label for="mineralization">Минерализация:</label>
+    <input type="number" id="mineralization">
+    <label for="iron">Содержание железа:</label>
+    <input type="number" id="iron">
+    <label for="manganese">Содержание марганца:</label>
+    <input type="number" id="manganese">
+    <label for="bacteria">Содержание бактерий:</label>
+    <input type="text" id="bacteria">
 
-  
+    <label for="operation">Режим работы скважины и ее производительность:</label>
+    <input type="text" id="operation">
 
     <input type="button" value="Сохранить" onclick="saveData()">
   </form>
 
   <script>
-
-function generateMonitoringData() {
-  const date = new Date().toLocaleDateString();  
-  return `${date}`;
-}
-
-
+    function generateMonitoringData() {
+      const date = new Date().toLocaleDateString();
+      return `${date}`;
+    }
     function saveData() {
   const coordinates = document.getElementById("coordinates").value;
   const depth = document.getElementById("depth").value;
+  const staticLevel = document.getElementById("static").value;
   const drillingSolution = document.getElementById("drilling-solution").value;
   const pH = document.getElementById("ph").value;
   const temperature = document.getElementById("temperature").value;
@@ -71,26 +85,28 @@ function generateMonitoringData() {
   const monitoring = generateMonitoringData();
 
   const data = `
-    	Паспорт Скважины
+    		Паспорт Скважины
 
- Географические данные - ${coordinates}
+    Географические данные - ${coordinates}
 
- Глубина скважины - ${depth}
+    Глубина скважины - ${depth}
 
- Диаметр и тип филтра - ${drillingSolution}
+    Статический уровень - ${staticLevel}
 
-   Данные о качестве воды:
+    Диаметр и тип бурового раствора - ${drillingSolution}
 
-     pH - ${pH}
-     Температура - ${temperature}
-     Минерализация - ${mineralization}
-     Содержание железа - ${iron}
-     Содержание марганица - ${manganese}
-     Содержание бактерий - ${bacteria}
+    Данные о качестве воды:
 
- Режим работы скважины - ${operation}
+      pH - ${pH}
+      Температура - ${temperature}
+      Минерализация - ${mineralization}
+      Содержание железа - ${iron}
+      Содержание марганица - ${manganese}
+      Содержание бактерий - ${bacteria}
 
- Дата мониторинга: ${monitoring}
+    Режим работы скважины - ${operation}
+
+    Дата мониторинга: ${monitoring}
   `;
 
   const file = new Blob([data], {type: "text/plain"});
