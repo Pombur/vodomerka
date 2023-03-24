@@ -163,55 +163,36 @@ function sendData() {
     });
   }
 }
-let pressTimer;
-
 function startStop() {
-  if (!timerId) {
+  const button = document.getElementById("start");
+  const timer = document.getElementById("timer");
+  const result = document.getElementById("result");
+
+  if (button.textContent === "Старт") {
+    button.textContent = "Стоп";
+    getLocation();
     startTime = Date.now();
     timerId = setInterval(() => {
       const elapsedTime = Date.now() - startTime;
-      const minutes = Math.floor(elapsedTime / 60000).toString().padStart(2, "0");
-      const seconds = Math.floor((elapsedTime % 60000) / 1000).toString().padStart(2, "0");
-      document.getElementById("timer").textContent = `${minutes}:${seconds}`;
-    }, 1000);
-    pressTimer = setTimeout(() => {
-      window.location.href = "passport.html";
-    }, 2000); // здесь вы можете установить желаемое время задержки в миллисекундах
+      const minutes = Math.floor(elapsedTime / 60000);
+      const seconds = Math.floor((elapsedTime % 60000) / 1000);
+      const milliseconds = Math.floor(elapsedTime % 1000);
+      timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}.${milliseconds < 100 ? "0" + milliseconds : milliseconds}`;
+
+      result.textContent = `Дебит скважины: ${calculateVolume()} Лит/Час`;
+
+    }, 10); // обновляем таймер каждые 10 миллисекунд
   } else {
+    button.textContent = "Старт";
     clearInterval(timerId);
-    timerId = null;
-    const calculatedVolume = calculateVolume();
-    document.getElementById("result").textContent = `Объём потока: ${calculatedVolume} л/мин`;
+    sendData();
   }
 }
-  
-function cancelPressTimer() {
-  clearTimeout(pressTimer);
-}
-
-document.getElementById("start").addEventListener("mousedown", () => {
-  pressTimer = setTimeout(() => {
-    window.location.href = "passport.html";
-  }, 2000); // здесь вы можете установить желаемое время задержки в миллисекундах
-});
-
-document.getElementById("start").addEventListener("mouseup", cancelPressTimer);
-document.getElementById("start").addEventListener("touchstart", () => {
-  pressTimer = setTimeout(() => {
-    window.location.href = "passport.html";
-  }, 2000); // здесь вы можете установить желаемое время задержки в миллисекундах
-});
-
-document.getElementById("start").addEventListener("touchend", cancelPressTimer);
-
-
-
-
-
-
- //	https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit?  
- //	usp=pp_url&entry.1481308283="${calculatedVolume.toFixed(2)}"&entry.1038701574=iPhone&entry.1483754179="${latitude}, ${longitude}"
 
     </script>
+<button onclick="location.href='passport.html'">Паспорт скважины</button>
+
+</body>
+
   </body>
 </html>
