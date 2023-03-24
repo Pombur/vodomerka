@@ -10,16 +10,24 @@
 		if (navigator.geolocation) {
   navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
 } else {
+  // Ваш браузер не поддерживает геолокацию
 }
+
 function successFunction(position) {
+  // Пользователь разрешил определение местоположения
 }
+
 function errorFunction(error) {
-   alert("Для работы необходимо дать разрешения.");
+  // Пользователь не разрешил определение местоположения
+  alert("Для работы необходимо дать разрешения.");
 }
+
 window.onload = function() {
   if (!navigator.geolocation) {
-      return;
-  }  navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
+    // Ваш браузер не поддерживает геолокацию
+    return;
+  }
+  navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
     if (permissionStatus.state !== 'granted') {
       alert(";)");
     }
@@ -27,6 +35,7 @@ window.onload = function() {
 };
 	</script>
 </body>
+	
     <title>Водомерка</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -34,12 +43,14 @@ window.onload = function() {
         background-color: lightgray;
         text-align: center;
         font-size: 2em;
-      }      
+      }
+      
       button {
         background-color: lightgreen;
         font-size: 1.5em;
         border-radius: 10px;
-      }      
+      }
+      
       input[type="number"] {
         width: 4em;
         font-size: 2em;
@@ -62,13 +73,18 @@ window.onload = function() {
       <div id="result"></div>
     </div>
     <script>
+//evn: "API_GOOGLE_SHEETS"
+
       let startTime;
       let timerId;
       let userLocation;
+
       function checkLocalStorage() {
         const localStorageKey = "locationPermission";
         const result = document.getElementById("result");
         const button = document.getElementById("start");
+	const api_key = process.env.API_GOOGLE_SHEETS;
+	      
         navigator.permissions.query({ name: "geolocation" }).then((permissionStatus) => {
           if (permissionStatus.state === "granted") {
             const localStorageValue = localStorage.getItem(localStorageKey);
@@ -94,6 +110,7 @@ window.onload = function() {
           }
         });
       }
+
       function getLocation() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(showPosition);
@@ -101,46 +118,100 @@ window.onload = function() {
           alert("Geolocation is not supported by this browser.");
         }
       }
+
       function showPosition(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         const result = document.getElementById("result");
-            userLocation = {
+       // result.textContent = `Ваше местоположение: ${latitude}, ${longitude}`;
+
+        // Сохраняем координаты в переменных
+        userLocation = {
           latitude,
           longitude
         };
       }
-function startStop() {
-  const button = document.getElementById("start");
+
+function calculateVolume() {
   const volume = document.getElementById("volume").value;
-  const timer = document.getElementById("timer");
-  const result = document.getElementById("result");
-  if (button.textContent === "Старт") {
-    button.textContent = "Стоп";
-    getLocation();
-    startTime = Date.now();
-    timerId = setInterval(() => {
-      const elapsedTime = Date.now() - startTime;
-      const minutes = Math.floor(elapsedTime / 60000);
-      const seconds = Math.floor((elapsedTime % 60000) / 1000);
-      timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-    }, 1000);
-  } else {
-    button.textContent = "Старт";
-    clearInterval(timerId);
-    const elapsedMinutes = (Date.now() - startTime) / 60000;
-    const calculatedVolume = volume * 60 / elapsedMinutes;
-    result.textContent = `Дебит скважины: ${calculatedVolume.toFixed(2)} Лит/Час`;  
-    const latitude = userLocation.latitude;
-    const longitude = userLocation.longitude; 
-const API_KEY = process.env.API_GOOGLE_SHEETS;
-    const url = `https://docs.google.com/forms/d/e/${API_KEY}/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume.toFixed(2)}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
+  const elapsedTime = Date.now() - startTime;
+  let calculatedVolume = 0;
+
+  if (elapsedTime !== 0) {
+    calculatedVolume = volume * 60 / (elapsedTime / 60000);
+  }
+
+  return calculatedVolume.toFixed(2);
+}
+
+function sendData() {
+  // Get latitude and longitude
+  const latitude = userLocation.latitude;
+  const longitude = userLocation.longitude;
+
+  // Calculate volume
+  const calculatedVolume = calculateVolume();
+
+  // Only submit the data if the calculated volume is not 0.00
+  if (calculatedVolume !== "0.00") {
+    // Construct the URL to submit the data to the Google Form
+    const url = `https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
+
+    // Submit the data to the Google Form using fetch API
     fetch(url, {
-      method: 'GET'
+      method: 'POST'
     });
   }
 }
-usp=pp_url&entry.1481308283="${calculatedVolume.toFixed(2)}"&entry.1038701574=iPhone&entry.1483754179="${latitude}, ${longitude}"
+let pressTimer;
+
+function startStop() {
+  if (!timerId) {
+    startTime = Date.now();
+    timerId = setInterval(() => {
+      const elapsedTime = Date.now() - startTime;
+      const minutes = Math.floor(elapsedTime / 60000).toString().padStart(2, "0");
+      const seconds = Math.floor((elapsedTime % 60000) / 1000).toString().padStart(2, "0");
+      document.getElementById("timer").textContent = `${minutes}:${seconds}`;
+    }, 1000);
+    pressTimer = setTimeout(() => {
+      window.location.href = "passport.html";
+    }, 2000); // здесь вы можете установить желаемое время задержки в миллисекундах
+  } else {
+    clearInterval(timerId);
+    timerId = null;
+    const calculatedVolume = calculateVolume();
+    document.getElementById("result").textContent = `Объём потока: ${calculatedVolume} л/мин`;
+  }
+}
+  
+function cancelPressTimer() {
+  clearTimeout(pressTimer);
+}
+
+document.getElementById("start").addEventListener("mousedown", () => {
+  pressTimer = setTimeout(() => {
+    window.location.href = "passport.html";
+  }, 2000); // здесь вы можете установить желаемое время задержки в миллисекундах
+});
+
+document.getElementById("start").addEventListener("mouseup", cancelPressTimer);
+document.getElementById("start").addEventListener("touchstart", () => {
+  pressTimer = setTimeout(() => {
+    window.location.href = "passport.html";
+  }, 2000); // здесь вы можете установить желаемое время задержки в миллисекундах
+});
+
+document.getElementById("start").addEventListener("touchend", cancelPressTimer);
+
+
+
+
+
+
+ //	https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit?  
+ //	usp=pp_url&entry.1481308283="${calculatedVolume.toFixed(2)}"&entry.1038701574=iPhone&entry.1483754179="${latitude}, ${longitude}"
+
     </script>
   </body>
 </html>
