@@ -88,7 +88,7 @@ function showPosition(position) {
   document.getElementById("coordinates").value = lat + ", " + lng;
 }
 
-    function saveData() {
+function saveData() {
   const coordinates = document.getElementById("coordinates").value;
   const depth = document.getElementById("depth").value;
   const staticLevel = document.getElementById("static").value;
@@ -102,8 +102,9 @@ function showPosition(position) {
   const operation = document.getElementById("operation").value;
   const monitoring = generateMonitoringData();
 
-  const data = `
-    		Паспорт Скважины
+  // Save data as text file
+  const textData = `
+    Паспорт Скважины
 
     Географические данные - ${coordinates}
 
@@ -126,21 +127,36 @@ function showPosition(position) {
 
     Дата мониторинга: ${monitoring}
   `;
+  const textFile = new Blob([textData], { type: "text/plain" });
+  const textFileUrl = URL.createObjectURL(textFile);
+  const date = new Date().toISOString().slice(0, 10);
+  const textFileName = `Well_${date}.txt`;
 
-  const file = new Blob([data], {type: "text/plain"});
-  const a = document.createElement("a");
-  const url = URL.createObjectURL(file);
-  a.href = url;
-  const date = new Date().toISOString().slice(0, 10); // получаем текущую дату в формате "yyyy-mm-dd"
-a.download = `Well_${date}.txt`; // добавляем дату в имя файла
+  // Submit data to Google Form
+  const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse";
+  const formData = new FormData();
+  formData.append("entry.1481308283", operation + "л.ч");
+  formData.append("entry.1277551412", staticLevel);
+  formData.append("entry.1413133379", depth);
+  formData.append("entry.1038701574", "Буровой Дед");
+  formData.append("entry.1483754179", coordinates);
 
-  document.body.appendChild(a);
-  a.click();
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", formUrl, true);
+  xhr.send(formData);
+
+  // Download text file
+  const downloadLink = document.createElement("a");
+  downloadLink.href = textFileUrl;
+  downloadLink.download = textFileName;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
   setTimeout(() => {
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);  
+    document.body.removeChild(downloadLink);
+    window.URL.revokeObjectURL(textFileUrl);
   }, 0);
 }
+
 
 
 </script>
