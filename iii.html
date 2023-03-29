@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Опрос для клиентов, желающих пробурить абиссинскую скважину</title>
+</head>
+<body>
+  <h1>Опрос для клиентов, желающих пробурить абиссинскую скважину</h1>
+  <form>
+    <ol>
+      <li>
+        <p>У вас или ваших соседей уже есть абиссинская скважина?</p>
+        <ul>
+          <li><label><input type="radio" name="question1" value="yes">Да, укажите метраж скважины: <input type="number" name="meterage"></label></li>
+          <li><label><input type="radio" name="question1" value="no">Нет</label></li>
+        </ul>
+      </li>
+      <li>
+        <p>Возможно есть колодец?</p>
+        <ul>
+          <li><label><input type="radio" name="question2" value="yes">Да, укажите глубину колодца и его статический уровень: глубина <input type="number" name="well_depth"> м, статический уровень <input type="number" name="well_level"> м</label></li>
+          <li><label><input type="radio" name="question2" value="no">Нет</label></li>
+        </ul>
+      </li>
+      <li>
+        <p>Как в данный момент вы или ваши соседи добывают воду?</p>
+        <ul>
+          <li><label><input type="radio" name="question3" value="water_system">Водопроводная система</label></li>
+          <li><label><input type="radio" name="question3" value="manual_pump">Ручной насос</label></li>
+          <li><label><input type="radio" name="question3" value="electric_pump">Электрический насос</label></li>
+          <li><label><input type="radio" name="question3" value="other">Другое (укажите, каким образом) <input type="text" name="other_method"></label></li>
+        </ul>
+      </li>
+      <li>
+        <p>Укажите место предполагаемого места бурения (координаты):</p>
+        <input type="text" name="question4">
+      </li>
+      <li>
+        <p>Укажите номер и вид связи:</p>
+        <input type="text" name="question5">
+      </li>
+    </ol>
+    <button type="submit">Отправить</button>
+  </form>
+</body>
+</html>
