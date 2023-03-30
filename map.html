@@ -67,7 +67,7 @@
                 $.each(data.values, function(key, val) {
                     var myPlacemark = new ymaps.Placemark([parseFloat(val[0]), parseFloat(val[1])], {
                         hintContent: val[2],
-                        balloonContent: val[2] + ' ' + val[3]
+                        balloonContent: val[2] + val[3]
                     }, {
                         preset: 'islands#redDotIcon',
                         iconCaptionMaxWidth: '250'
