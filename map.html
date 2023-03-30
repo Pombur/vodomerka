@@ -62,10 +62,10 @@
                 center: [55.76, 37.64],
                 zoom: 10
             });
-            $.getJSON("https://sheets.googleapis.com/v4/spreadsheets/10WX3Q1GuwKnNs95rYA4L6xGsjnlTm6NJb5xW2Z50Ogk/values/Abi!A2:C?key=AIzaSyBuQc7Oy5xHOgbdIkrb1omZpEF95orEqYs",
+            $.getJSON("https://sheets.googleapis.com/v4/spreadsheets/10WX3Q1GuwKnNs95rYA4L6xGsjnlTm6NJb5xW2Z50Ogk/values/Abi!A2:D?key=AIzaSyBuQc7Oy5xHOgbdIkrb1omZpEF95orEqYs",
             function(data) {
                 $.each(data.values, function(key, val) {
-                    var myPlacemark = new ymaps.Placemark([parseFloat(val[0]), parseFloat(val[1]), parseFloat(val[2])], {
+                    var myPlacemark = new ymaps.Placemark([parseFloat(val[0]), parseFloat(val[1])], {
                         hintContent: val[2],
                         balloonContent: val[2]
                     }, {
