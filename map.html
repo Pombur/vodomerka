@@ -63,16 +63,16 @@
                 zoom: 10
             });
             $.getJSON("https://sheets.googleapis.com/v4/spreadsheets/10WX3Q1GuwKnNs95rYA4L6xGsjnlTm6NJb5xW2Z50Ogk/values/Abi!A2:C?key=AIzaSyBuQc7Oy5xHOgbdIkrb1omZpEF95orEqYs",
-            function(data) {
-                $.each(data.values, function(key, val) {
-                    var myPlacemark = new ymaps.Placemark([parseFloat(val[0]), parseFloat(val[1])], {
-                        hintContent: val[2],
-                        balloonContent: val[2] + val[3]
-                    }, {
-                        preset: 'islands#redDotIcon',
-                        iconCaptionMaxWidth: '250'
-                    });
-                    myMap.geoObjects.add(myPlacemark);
+function(data) {
+            $.each(data.values, function(key, val) {
+                var myPlacemark = new ymaps.Placemark([parseFloat(val[0]), parseFloat(val[1])], {
+                    hintContent: val[2],
+                    balloonContent: val[2] + ' - ' + val[3] // добавляем значение из столбца D
+                }, {
+                    preset: 'islands#redDotIcon',
+                    iconCaptionMaxWidth: '250'
+                });
+                myMap.geoObjects.add(myPlacemark);
                 });
             });
         }
