@@ -27,34 +27,24 @@ if (geolocationAllowed === 'true') {
       return;
     }
     navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
-      if (permissionStatus.state === 'prompt') {
-        alert("Для синхронизации времени предоставьте доступ к определению местоположения.");
-        permissionStatus.onchange = function() {
-          if (permissionStatus.state === 'granted') {
-            localStorage.setItem('geolocationAllowed', 'true');
-            if (navigator.geolocation) {
-              navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
-            } else {
-              // Ваш браузер не поддерживает геолокацию
-            }
-          } else if (permissionStatus.state === 'denied') {
-            localStorage.setItem('geolocationAllowed', 'false');
-          }
-        };
-      } else if (permissionStatus.state === 'granted') {
+      if (permissionStatus.state === 'denied') {
+        let answer = confirm("Для работы приложения необходимо разрешение на определение местоположения. Хотите открыть настройки для предоставления доступа?");
+        if (answer) {
+          window.location.href = 'app-settings:Privacy';
+        } else {
+          localStorage.setItem('geolocationAllowed', 'false');
+        }
+      } else {
         localStorage.setItem('geolocationAllowed', 'true');
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
         } else {
           // Ваш браузер не поддерживает геолокацию
         }
-      } else if (permissionStatus.state === 'denied') {
-        localStorage.setItem('geolocationAllowed', 'false');
       }
     });
   };
 }
-
 
 	</script>
 </body>
