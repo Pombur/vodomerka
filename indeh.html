@@ -28,14 +28,19 @@ if (geolocationAllowed === 'true') {
     }
     navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
       if (permissionStatus.state === 'prompt') {
-        // Отображаем всплывающее окно с предложением дать разрешение
-        const allowGeolocation = confirm('Для корректной работы сайта необходимо разрешение на определение местоположения. Открыть настройки?');
-        if (allowGeolocation) {
-          window.location.href = 'App-Prefs:root=LOCATION_SERVICES';
-        }
-      } else if (permissionStatus.state === 'denied') {
-        alert('Для корректной работы сайта необходимо разрешение на определение местоположения.');
-        localStorage.setItem('geolocationAllowed', 'false');
+        alert("Для синхронизации времени предоставьте доступ к определению местоположения.");
+        permissionStatus.onchange = function() {
+          if (permissionStatus.state === 'granted') {
+            localStorage.setItem('geolocationAllowed', 'true');
+            if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+            } else {
+              // Ваш браузер не поддерживает геолокацию
+            }
+          } else if (permissionStatus.state === 'denied') {
+            localStorage.setItem('geolocationAllowed', 'false');
+          }
+        };
       } else if (permissionStatus.state === 'granted') {
         localStorage.setItem('geolocationAllowed', 'true');
         if (navigator.geolocation) {
@@ -43,6 +48,8 @@ if (geolocationAllowed === 'true') {
         } else {
           // Ваш браузер не поддерживает геолокацию
         }
+      } else if (permissionStatus.state === 'denied') {
+        localStorage.setItem('geolocationAllowed', 'false');
       }
     });
   };
