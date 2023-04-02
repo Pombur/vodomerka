@@ -7,7 +7,6 @@
 </head>
 <body>
 	<script>
-// Проверяем, есть ли сохраненное решение пользователя о доступе к местоположению
 let geolocationAllowed = localStorage.getItem('geolocationAllowed');
 
 if (geolocationAllowed === 'true') {
@@ -27,24 +26,23 @@ if (geolocationAllowed === 'true') {
       return;
     }
     navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
-      if (permissionStatus.state !== 'granted') {
-        if (window.confirm('Для синхронизации времени нужно разрешить доступ к местоположению. Вы хотите разрешить доступ?')) {
-          localStorage.setItem('geolocationAllowed', 'true');
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
-          } else {
-            // Ваш браузер не поддерживает геолокацию
-          }
-        } else {
-          localStorage.setItem('geolocationAllowed', 'false');
-        }
+      if (permissionStatus.state === 'denied') {
+        // Пользователь ранее запретил доступ к местоположению
+        alert("Для синхронизации времени предоставьте доступ к определению местоположения.");
+        localStorage.setItem('geolocationAllowed', 'false');
       } else {
-        localStorage.setItem('geolocationAllowed', 'true');
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
-        } else {
-          // Ваш браузер не поддерживает геолокацию
-        }
+        // Пользователь еще не принял решение или разрешил доступ к местоположению
+        navigator.geolocation.getCurrentPosition(successFunction, function(error) {
+          if (error.code === error.PERMISSION_DENIED) {
+            // Пользователь отказался предоставить доступ к местоположению
+            alert("Для синхронизации времени необходим доступ к определению местоположения.");
+            localStorage.setItem('geolocationAllowed', 'false');
+          } else {
+            // Доступ к местоположению разрешен, выполняем запрос
+            localStorage.setItem('geolocationAllowed', 'true');
+            successFunction(position);
+          }
+        });
       }
     });
   };
