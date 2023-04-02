@@ -7,6 +7,7 @@
 </head>
 <body>
 	<script>
+// Проверяем, есть ли сохраненное решение пользователя о доступе к местоположению
 let geolocationAllowed = localStorage.getItem('geolocationAllowed');
 
 if (geolocationAllowed === 'true') {
@@ -26,23 +27,23 @@ if (geolocationAllowed === 'true') {
       return;
     }
     navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
-      if (permissionStatus.state === 'denied') {
-        // Пользователь ранее запретил доступ к местоположению
-        alert("Для синхронизации времени предоставьте доступ к определению местоположения.");
-        localStorage.setItem('geolocationAllowed', 'false');
+      if (permissionStatus.state !== 'granted') {
+        if (confirm("Для синхронизации времени необходим доступ к определению местоположения. Разрешить доступ?")) {
+          permissionStatus.onchange = function() {
+            localStorage.setItem('geolocationAllowed', permissionStatus.state);
+            location.reload();
+          };
+          permissionStatus.request();
+        } else {
+          localStorage.setItem('geolocationAllowed', 'false');
+        }
       } else {
-        // Пользователь еще не принял решение или разрешил доступ к местоположению
-        navigator.geolocation.getCurrentPosition(successFunction, function(error) {
-          if (error.code === error.PERMISSION_DENIED) {
-            // Пользователь отказался предоставить доступ к местоположению
-            alert("Для синхронизации времени необходим доступ к определению местоположения.");
-            localStorage.setItem('geolocationAllowed', 'false');
-          } else {
-            // Доступ к местоположению разрешен, выполняем запрос
-            localStorage.setItem('geolocationAllowed', 'true');
-            successFunction(position);
-          }
-        });
+        localStorage.setItem('geolocationAllowed', 'true');
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+        } else {
+          // Ваш браузер не поддерживает геолокацию
+        }
       }
     });
   };
