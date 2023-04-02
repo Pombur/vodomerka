@@ -7,7 +7,6 @@
 </head>
 <body>
 	<script>
-// Проверяем, есть ли сохраненное решение пользователя о доступе к местоположению
 let geolocationAllowed = localStorage.getItem('geolocationAllowed');
 
 if (geolocationAllowed === 'true') {
@@ -17,8 +16,6 @@ if (geolocationAllowed === 'true') {
   } else {
     // Ваш браузер не поддерживает геолокацию
   }
-} else if (geolocationAllowed === 'false') {
-  // Доступ к местоположению запрещен, ничего не делаем
 } else {
   // Пользователь еще не принял решение о доступе к местоположению
   window.onload = function() {
@@ -27,22 +24,47 @@ if (geolocationAllowed === 'true') {
       return;
     }
     navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
-      if (permissionStatus.state !== 'granted') {
-        if (confirm("Для синхронизации времени необходим доступ к определению местоположения. Разрешить доступ?")) {
-          permissionStatus.onchange = function() {
-            localStorage.setItem('geolocationAllowed', permissionStatus.state);
-            location.reload();
-          };
-          permissionStatus.request();
+      if (permissionStatus.state === 'denied') {
+        alert("Для синхронизации времени предоставьте доступ к определению местоположения.");
+        localStorage.setItem('geolocationAllowed', 'false');
+      } else {
+        permissionStatus.onchange = function() {
+          if (permissionStatus.state === 'granted') {
+            localStorage.setItem('geolocationAllowed', 'true');
+            if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+            } else {
+              // Ваш браузер не поддерживает геолокацию
+            }
+          } else {
+            localStorage.setItem('geolocationAllowed', 'false');
+          }
+        };
+        if (permissionStatus.state === 'granted') {
+          localStorage.setItem('geolocationAllowed', 'true');
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+          } else {
+            // Ваш браузер не поддерживает геолокацию
+          }
+        } else if (permissionStatus.state === 'prompt') {
+          // Предлагаем пользователю разрешить доступ к местоположению
+          if (confirm("Разрешить сайту использовать ваше местоположение?")) {
+            permissionStatus.request().then(function() {
+              localStorage.setItem('geolocationAllowed', 'true');
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+              } else {
+                // Ваш браузер не поддерживает геолокацию
+              }
+            }).catch(function() {
+              localStorage.setItem('geolocationAllowed', 'false');
+            });
+          } else {
+            localStorage.setItem('geolocationAllowed', 'false');
+          }
         } else {
           localStorage.setItem('geolocationAllowed', 'false');
-        }
-      } else {
-        localStorage.setItem('geolocationAllowed', 'true');
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
-        } else {
-          // Ваш браузер не поддерживает геолокацию
         }
       }
     });
