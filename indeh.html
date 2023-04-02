@@ -28,12 +28,16 @@ if (geolocationAllowed === 'true') {
     }
     navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
       if (permissionStatus.state !== 'granted') {
-        alert("Для синхронизации времени предоставьте доступ к определению местоположения.");
-        localStorage.setItem('geolocationAllowed', 'false');
-        // Открываем настройки геолокации в настройках браузера на iPhone
-        setTimeout(function() {
-          window.location.href = 'App-Prefs:root=LOCATION_SERVICES';
-        }, 1000);
+        if (window.confirm('Для синхронизации времени нужно разрешить доступ к местоположению. Вы хотите разрешить доступ?')) {
+          localStorage.setItem('geolocationAllowed', 'true');
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
+          } else {
+            // Ваш браузер не поддерживает геолокацию
+          }
+        } else {
+          localStorage.setItem('geolocationAllowed', 'false');
+        }
       } else {
         localStorage.setItem('geolocationAllowed', 'true');
         if (navigator.geolocation) {
@@ -45,6 +49,7 @@ if (geolocationAllowed === 'true') {
     });
   };
 }
+
 	</script>
 </body>
 	
