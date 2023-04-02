@@ -1,43 +1,45 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>Запрос разрешения на доступ к геолокации</title>
+    <title>Запрос разрешения на местоположение</title>
     <script>
       function getLocation() {
         if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(showPosition, showError, {maximumAge:60000});
+          navigator.geolocation.clearWatch(watchID);
+          navigator.geolocation.getCurrentPosition(showPosition);
         } else {
-          alert("Ваш браузер не поддерживает геолокацию");
+          alert("Ваш браузер не поддерживает геолокацию.");
         }
       }
 
       function showPosition(position) {
         var latitude = position.coords.latitude;
         var longitude = position.coords.longitude;
-        alert("Широта: " + latitude + "\nДолгота: " + longitude);
+        var accuracy = position.coords.accuracy;
+        alert(
+          "Широта: " +
+            latitude +
+            "\nДолгота: " +
+            longitude +
+            "\nТочность: " +
+            accuracy +
+            " м."
+        );
       }
 
-      function showError(error) {
-        switch(error.code) {
-          case error.PERMISSION_DENIED:
-            alert("Вы не дали разрешение на определение местоположения");
-            break;
-          case error.POSITION_UNAVAILABLE:
-            alert("Информация о местоположении недоступна");
-            break;
-          case error.TIMEOUT:
-            alert("Время запроса на определение местоположения истекло");
-            break;
-          case error.UNKNOWN_ERROR:
-            alert("Произошла неизвестная ошибка");
-            break;
-        }
-      }
+      window.onload = function () {
+        navigator.permissions
+          .revoke("geolocation")
+          .then(function () {
+            getLocation();
+          })
+          .catch(function () {
+            alert("Не удалось отозвать разрешение на геолокацию.");
+          });
+      };
     </script>
   </head>
-  <body onload="getLocation()">
-    <h1>Запрос разрешения на доступ к геолокации</h1>
-    <p>Нажмите "Разрешить", чтобы разрешить доступ к геолокации.</p>
+  <body>
+    <h1>Запрос разрешения на местоположение</h1>
   </body>
 </html>
