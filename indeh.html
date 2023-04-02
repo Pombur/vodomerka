@@ -7,39 +7,28 @@
 </head>
 <body>
 	<script>
-let geolocationAllowed = localStorage.getItem('geolocationAllowed');
-
-if (geolocationAllowed === 'true') {
-  // Доступ к местоположению разрешен, выполняем запрос
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
-  } else {
+window.onload = function() {
+  if (!navigator.geolocation) {
     // Ваш браузер не поддерживает геолокацию
+    return;
   }
-} else {
-  // Пользователь еще не принял решение о доступе к местоположению
-  window.onload = function() {
-    if (!navigator.geolocation) {
-      // Ваш браузер не поддерживает геолокацию
-      return;
-    }
-    navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
-      if (permissionStatus.state === 'denied') {
-        alert("Для синхронизации времени предоставьте доступ к определению местоположения.");
-        localStorage.setItem('geolocationAllowed', 'false');
+  
+  navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
+    if (permissionStatus.state === 'denied') {
+      // Разрешение на использование геолокации было отклонено, предлагаем пользователю включить его в настройках
+      if(confirm("Для использования сервиса необходимо разрешить определение местоположения. Хотите перейти в настройки?")){
+        window.location.href = 'App-Prefs:root=Privacy&path=LOCATION';
+      }
+    } else if (permissionStatus.state === 'granted') {
+      // Разрешение на использование геолокации получено, выполняем запрос
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
       } else {
-        permissionStatus.onchange = function() {
-          if (permissionStatus.state === 'granted') {
-            localStorage.setItem('geolocationAllowed', 'true');
-            if (navigator.geolocation) {
-              navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
-            } else {
-              // Ваш браузер не поддерживает геолокацию
-            }
-          } else {
-            localStorage.setItem('geolocationAllowed', 'false');
-          }
-        };
+        // Ваш браузер не поддерживает геолокацию
+      }
+    } else {
+      // Пользователь еще не принял решение о доступе к местоположению
+      permissionStatus.onchange = function() {
         if (permissionStatus.state === 'granted') {
           localStorage.setItem('geolocationAllowed', 'true');
           if (navigator.geolocation) {
@@ -47,29 +36,17 @@ if (geolocationAllowed === 'true') {
           } else {
             // Ваш браузер не поддерживает геолокацию
           }
-        } else if (permissionStatus.state === 'prompt') {
-          // Предлагаем пользователю разрешить доступ к местоположению
-          if (confirm("Разрешить сайту использовать ваше местоположение?")) {
-            permissionStatus.request().then(function() {
-              localStorage.setItem('geolocationAllowed', 'true');
-              if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
-              } else {
-                // Ваш браузер не поддерживает геолокацию
-              }
-            }).catch(function() {
-              localStorage.setItem('geolocationAllowed', 'false');
-            });
-          } else {
-            localStorage.setItem('geolocationAllowed', 'false');
-          }
-        } else {
+        } else if (permissionStatus.state === 'denied') {
           localStorage.setItem('geolocationAllowed', 'false');
+          // Разрешение на использование геолокации было отклонено, предлагаем пользователю включить его в настройках
+          if(confirm("Для использования сервиса необходимо разрешить определение местоположения. Хотите перейти в настройки?")){
+            window.location.href = 'App-Prefs:root=Privacy&path=LOCATION';
+          }
         }
-      }
-    });
-  };
-}
+      };
+    }
+  });
+};
 
 	</script>
 </body>
