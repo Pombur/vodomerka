@@ -1,27 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Запрос местоположения пользователя</title>
-	<meta charset="UTF-8">
-</head>
-<body>
-	<button onclick="getLocation()">Получить местоположение</button>
-	<p id="location"></p>
-	
-	<script>
-		function getLocation() {
-			if (navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(showPosition);
-			} else {
-				alert("Ваш браузер не поддерживает геолокацию.");
-			}
-		}
-		
-		function showPosition(position) {
-			var latitude = position.coords.latitude;
-			var longitude = position.coords.longitude;
-			document.getElementById("location").innerHTML = "Ваше местоположение: " + latitude + ", " + longitude;
-		}
-	</script>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>Запрос разрешения на доступ к геолокации</title>
+    <script>
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition, showError, {maximumAge:60000});
+        } else {
+          alert("Ваш браузер не поддерживает геолокацию");
+        }
+      }
+
+      function showPosition(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        alert("Широта: " + latitude + "\nДолгота: " + longitude);
+      }
+
+      function showError(error) {
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            alert("Вы не дали разрешение на определение местоположения");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            alert("Информация о местоположении недоступна");
+            break;
+          case error.TIMEOUT:
+            alert("Время запроса на определение местоположения истекло");
+            break;
+          case error.UNKNOWN_ERROR:
+            alert("Произошла неизвестная ошибка");
+            break;
+        }
+      }
+    </script>
+  </head>
+  <body onload="getLocation()">
+    <h1>Запрос разрешения на доступ к геолокации</h1>
+    <p>Нажмите "Разрешить", чтобы разрешить доступ к геолокации.</p>
+  </body>
 </html>
