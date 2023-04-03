@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Адаптивный iframe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* стили для адаптивного iframe */
+    .iframe-container {
+      position: relative;
+      overflow: hidden;
+      padding-top: 56.25%; /* соотношение сторон 16:9 для видео */
+    }
+    .iframe-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    /* медиа-запрос для устройств с шириной экрана менее 640px */
+    @media screen and (max-width: 640px) {
+      .iframe-container {
+        padding-top: 100%; /* изменяем соотношение сторон для мобильных устройств */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="iframe-container">
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSejpXMlC0-iwNIx0bs-Amnb9vILAGdIg2uEJLSd1Ag_97aWLQ/viewform?embedded=true" frameborder="0" marginheight="0" marginwidth="0"></iframe>
+  </div>
+</body>
+</html>
