@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Расчет протекания воды</title>
+  </head>
+  <body>
+    <h1>Введите данные для расчета</h1>
+    <form>
+      <label for="diameter">Диаметр трубы, мм:</label>
+      <input type="number" id="diameter" name="diameter"><br><br>
+      <label for="velocity">Скорость потока, м/c:</label>
+      <input type="number" id="velocity" name="velocity"><br><br>
+      <input type="button" value="Рассчитать" onclick="calculate()"><br><br>
+    </form>
+    <div id="result"></div>
+    <script>
+      function calculate() {
+        var diameter = document.getElementById("diameter").value;
+        var velocity = document.getElementById("velocity").value;
+        var area = Math.PI * (diameter / 1000) ** 2 / 4;
+        var flow = area * velocity;
+        var volume = flow * 3600;
+        document.getElementById("result").innerHTML = "Объем протекающей воды за 1 час: " + volume.toFixed(3) + " м³";
+      }
+    </script>
+  </body>
+</html>
