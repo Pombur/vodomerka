@@ -1,198 +1,117 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Водомерка</title>
-	<meta charset="utf-8">
-	 <link rel="icon" href="path/to/oa.png" type="image/png">
-</head>
-<body>
-	<script>
-		if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(successFunction, errorFunction);
-} else {
-  // Ваш браузер не поддерживает геолокацию
-}
-
-function successFunction(position) {
-  // Пользователь разрешил определение местоположения
-}
-
-function errorFunction(error) {
-  // Пользователь не разрешил определение местоположения
-  alert("Это сообщение будет удалено после получения разрешения. Настройки -> Safari -> Очистить историю и данные.");
-}
-
-window.onload = function() {
-  if (!navigator.geolocation) {
-    // Ваш браузер не поддерживает геолокацию
-    return;
-  }
-  navigator.permissions.query({name:'geolocation'}).then(function(permissionStatus) {
-    if (permissionStatus.state !== 'granted') {
-      alert(";)");
-    }
-  });
-};
-	</script>
-</body>
-	
     <title>Водомерка</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="oa.png" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      body {
-        background-color: lightgray;
-        text-align: center;
-        font-size: 2em;
-      }
-      
-      button {
-        background-color: lightgreen;
-        font-size: 1.5em;
-        border-radius: 10px;
-      }
-      
-      input[type="number"] {
-        width: 4em;
-        font-size: 2em;
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
-	     <link rel="icon" href="path/to/aquarius.png" type="image/png">
-      <label for="volume">Водомерка</label>
-      <label for="volume">Объём</label>
-      <input type="number" id="volume" name="volume" value="10" maxlength="2"><br><br>
-      <button id="start" onclick="startStop()">Старт</button>
-<label for="volume">----</label>
-<button style="padding: 10px; font-size: 12px;" onclick="location.href='passport.html'">Паспорт скважины</button>
+        body {
+            background-color: lightgray;
+            text-align: center;
+            font-size: 2em;
+        }
 
-      <br><br>
-      <div id="timer">00:00</div>
-      <br>
-      <div id="result"></div>
+        button {
+            background-color: lightgreen;
+            font-size: 1.5em;
+            border-radius: 10px;
+        }
+
+        input[type="number"] {
+            width: 4em;
+            font-size: 2em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+        <label for="volume">Водомерка</label>
+        <label for="volume">Объём</label>
+        <input type="number" id="volume" name="volume" value="10" maxlength="2"><br><br>
+        <button id="start" onclick="startStop()">Старт</button>
+        <label for="volume">----</label>
+        <button style="padding: 10px; font-size: 12px;" onclick="location.href='passport.html'">Паспорт скважины</button>
+        <br><br>
+        <div id="timer">00:00</div>
+        <br>
+        <div id="result"></div>
     </div>
     <script>
-//evn: "API_GOOGLE_SHEETS"
+        let startTime;
+        let timerId;
+        let userLocation;
 
-      let startTime;
-      let timerId;
-      let userLocation;
-
-      function checkLocalStorage() {
-        const localStorageKey = "locationPermission";
-        const result = document.getElementById("result");
-        const button = document.getElementById("start");
-	const api_key = process.env.API_GOOGLE_SHEETS;
-	      
-        navigator.permissions.query({ name: "geolocation" }).then((permissionStatus) => {
-          if (permissionStatus.state === "granted") {
-            const localStorageValue = localStorage.getItem(localStorageKey);
-            if (localStorageValue) {
-              getLocation();
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
             } else {
-              localStorage.setItem(localStorageKey, "true");
-              getLocation();
-              result.textContent = "";
-              button.disabled = false;
+                alert("Геолокация не поддерживается этим браузером.");
             }
-          } else {
-            result.textContent = "Для синхронизации времени предоставь доступ";
-            button.disabled = true;
-            permissionStatus.onchange = () => {
-              if (permissionStatus.state === "granted") {
-                localStorage.setItem(localStorageKey, "true");
-              //  getLocation();
-             //   result.textContent = "";
-                button.disabled = false;
-              }
-            };
-          }
-        });
-      }
-
-      function getLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-          alert("Geolocation is not supported by this browser.");
         }
-      }
 
-      function showPosition(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        const result = document.getElementById("result");
-       // result.textContent = `Ваше местоположение: ${latitude}, ${longitude}`;
+        function showPosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
 
-        // Сохраняем координаты в переменных
-        userLocation = {
-          latitude,
-          longitude
-        };
-      }
+            userLocation = {
+                latitude,
+                longitude
+            };
+        }
 
-function calculateVolume() {
-  const volume = document.getElementById("volume").value;
-  const elapsedTime = Date.now() - startTime;
-  let calculatedVolume = 0;
+        function calculateVolume() {
+            const volume = document.getElementById("volume").value;
+            const elapsedTime = Date.now() - startTime;
+            let calculatedVolume = 0;
 
-  if (elapsedTime !== 0) {
-    calculatedVolume = volume * 60 / (elapsedTime / 60000);
-  }
+            if (elapsedTime !== 0) {
+                calculatedVolume = volume * 60 / (elapsedTime / 60000);
+            }
 
-  return calculatedVolume.toFixed(2);
-}
+            return calculatedVolume.toFixed(2);
+        }
 
-function sendData() {
-  // Get latitude and longitude
-  const latitude = userLocation.latitude;
-  const longitude = userLocation.longitude;
+        function sendData() {
+            const latitude = userLocation.latitude;
+            const longitude = userLocation.longitude;
+            const calculatedVolume = calculateVolume();
 
-  // Calculate volume
-  const calculatedVolume = calculateVolume();
+            if (calculatedVolume !== "0.00") {
+                const url = `https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
 
-  // Only submit the data if the calculated volume is not 0.00
-  if (calculatedVolume !== "0.00") {
-    // Construct the URL to submit the data to the Google Form
-    const url = `https://docs.google.com/forms/d/e/1FAIpQLSc3tyupksOD79esWtNwB6D-Xckkl8ieq-MaiaRyoP4Q8keAWA/formResponse?&submit=Submit&usp=pp_url&entry.1481308283=${calculatedVolume}л.ч&entry.1038701574=Буровой Дед&entry.1483754179=${latitude},${longitude}`;
+                fetch(url, {
+                    method: 'POST'
+                });
+            }
+        }
 
-    // Submit the data to the Google Form using fetch API
-    fetch(url, {
-      method: 'POST'
-    });
-  }
-}
-function startStop() {
-  const button = document.getElementById("start");
-  const timer = document.getElementById("timer");
-  const result = document.getElementById("result");
+        function startStop() {
+            const button = document.getElementById("start");
+            const timer = document.getElementById("timer");
+            const result = document.getElementById("result");
 
-  if (button.textContent === "Старт") {
-    button.textContent = "Стоп";
-    getLocation();
-    startTime = Date.now();
-    timerId = setInterval(() => {
-      const elapsedTime = Date.now() - startTime;
-      const minutes = Math.floor(elapsedTime / 60000);
-      const seconds = Math.floor((elapsedTime % 60000) / 1000);
-      const milliseconds = Math.floor(elapsedTime % 1000);
-      timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}.${milliseconds < 100 ? "0" + milliseconds : milliseconds}`;
+            if (button.textContent === "Старт") {
+                button.textContent = "Стоп";
+                getLocation();
+                startTime = Date.now();
+                timerId = setInterval(() => {
+                    const elapsedTime = Date.now() - startTime;
+                    const minutes = Math.floor(elapsedTime / 60000);
+                    const seconds = Math.floor((elapsedTime % 60000) / 1000);
+                    const milliseconds = Math.floor(elapsedTime % 1000);
+                    timer.textContent = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}.${milliseconds < 100 ? "0" + milliseconds : milliseconds}`;
 
-      result.textContent = `Дебит скважины: ${calculateVolume()} Лит/Час`;
+                    result.textContent = `Дебит скважины: ${calculateVolume()} Лит/Час`;
 
-    }, 10); // обновляем таймер каждые 10 миллисекунд
-  } else {
-    button.textContent = "Старт";
-    clearInterval(timerId);
-    sendData();
-  }
-}
-
+                }, 10);
+            } else {
+                button.textContent = "Старт";
+                clearInterval(timerId);
+                sendData();
+            }
+        }
     </script>
-
 </body>
-
-  </body>
 </html>
