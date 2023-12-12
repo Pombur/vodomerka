@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="refresh" content="8;url=https://vodomerka.flutterflow.app">
     <title>Маркет.аби</title>
     <style>
         body {
@@ -12,27 +11,31 @@
             text-decoration: none; /* Убрать подчеркивание ссылки */
             color: blue; /* Цвет ссылки */
         }
+        .image-container {
+            margin-top: 20px; /* Отступ сверху для изображения */
+        }
     </style>
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();
-   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-   ym(95846620, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true
-   });
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/95846620" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
-    
 </head>
 <body>
-    <p>Определяю ваш браузер. Владельцы iPhone Пожалуйста, подождите 5 сек...</p>
-       <a href="https://disk.yandex.ru/d/w26Z22ZTXNLXDw" target="_blank">Скачать для Андройд</a>
+    <p>Определяю ваш браузер...</p>
+    <p>Владельцы iPhone, пожалуйста, подождите <span id="countdown">5</span> сек...</p>
+    <a href="https://disk.yandex.ru/d/w26Z22ZTXNLXDw" target="_blank">Скачать для Android</a>
+    <div class="image-container">
+        <img src="icon.png" alt="Иконка">
+    </div>
+
+    <script>
+        // Обратный отсчёт
+        var seconds = 5; // Время обратного отсчёта
+        var timer = setInterval(function() {
+            seconds--;
+            if (seconds >= 0) {
+                document.getElementById('countdown').textContent = seconds;
+            } else {
+                clearInterval(timer);
+                window.location.href = 'https://vodomerka.flutterflow.app'; // Переадресация после отсчёта
+            }
+        }, 1000);
+    </script>
 </body>
 </html>
