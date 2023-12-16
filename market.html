@@ -23,7 +23,17 @@
     <div class="image-container">
         <img src="icon2.png" alt="Иконка">
     </div>
-
+  </script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(function(OneSignal) {
+    OneSignal.init({
+      appId: "68a9fd2c-8028-4a27-9e47-72042fb71a45",
+    });
+  });
+</script>
+    
     <script>
         // Обратный отсчёт
         var seconds = 10; // Время обратного отсчёта
