@@ -17,8 +17,6 @@
     </style>
 </head>
 <body>
-    <p>Определяю ваш браузер...</p>
-    <p>Владельцы iPhone, подождите <span id="countdown">10</span> сек...</p>
     <a href="https://disk.yandex.ru/d/MJWE_6_Dt6VCFQ" target="_blank">Скачать для Android</a>
     <div class="image-container">
         <img src="icon2.png" alt="Иконка">
@@ -33,19 +31,6 @@
     });
   });
 </script>
-    
-    <script>
-        // Обратный отсчёт
-        var seconds = 10; // Время обратного отсчёта
-        var timer = setInterval(function() {
-            seconds--;
-            if (seconds >= 0) {
-                document.getElementById('countdown').textContent = seconds;
-            } else {
-                clearInterval(timer);
-                window.location.href = 'https://vodomerka.flutterflow.app'; // Переадресация после отсчёта
-            }
-        }, 1000);
-    </script>
+
 </body>
 </html>
